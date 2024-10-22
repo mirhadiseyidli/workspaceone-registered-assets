@@ -72,25 +72,20 @@ class GetWorkspaceOneDevices:
                 user_status = user.status
             except Exception:
                 user_status = f"404: Not Found"
-            if device['UserName'].lower() == 'workspaceone':
-                continue
-            asset_number = device['AssetNumber']
-            if len(asset_number) > 8 or len(asset_number) == 0:
-                asset_number = 'None'
-            if device['SerialNumber'] == "Default string" or device['SerialNumber'] == "System Serial Number":
-                device['SerialNumber'] = "None"
             try:
                 print(f"{device['UserName'].lower():<25} {user_status:<15} {device['SerialNumber']:<25} " \
-                    f"{model:<65} {device['Platform']:<15} {asset_number:<15}")
+                    f"{model:<65} {device['Platform']:<15} {device['AssetNumber']:<15}")
             except Exception as e:
                 pass
+            # Assigns the data to variable and appends it into json/csv logs
             device_data = [device['UserName'].lower(), user_status, device['FriendlyName'], device['SerialNumber'],
-                           model, device['Platform'], asset_number, device['DeviceID']]
+                           model, device['Platform'], device['AssetNumber'], device['DeviceID']]
             if user_status == 'ACTIVE':
                 all_data_active.append((email, device_data))
             else:
                 all_data_inactive.append((email, device_data))
 
+        # Creates csv and json logs
         with open('active_user_devices.csv', 'w', newline='') as csvfile_active:
             fieldnames = ['username', 'user_status', 'device_name', 'serial_number',
                           'model', 'platform', 'asset_number', 'device_id']
